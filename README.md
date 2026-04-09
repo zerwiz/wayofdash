@@ -1,5 +1,7 @@
 # Way of — Fibonacci Dashboard
 
+**Canonical repository:** [github.com/zerwiz/wayofdash](https://github.com/zerwiz/wayofdash)
+
 React dashboard for organizing documentation, notes, tasks, and Mermaid diagrams using a **Fibonacci-scaled information architecture** (progressive depth: 1 → 2 → 3 → 5 → 8 …). The UI combines a file tree, GitHub-flavored Markdown previews, mindmaps, tasks, calendar, and an AI chat wired to optional Gemini and local agent definitions.
 
 ## Quick start
