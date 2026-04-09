@@ -139,10 +139,7 @@ export function dataApiPlugin() {
   const filesRoot = path.resolve(__dirname, '../workspace');
   const agentsRoot = path.resolve(__dirname, '../agents');
 
-  return {
-    name: 'vite-plugin-data-api',
-    configureServer(server) {
-      server.middlewares.use((req, res, next) => {
+  function dataApiMiddleware(req, res, next) {
         if (req.method === 'POST' && req.url?.startsWith('/api/agents-create')) {
           let raw = '';
           req.on('data', (chunk) => {
@@ -609,7 +606,15 @@ ${inner}
         }
 
         next();
-      });
+  }
+
+  return {
+    name: 'vite-plugin-data-api',
+    configureServer(server) {
+      server.middlewares.use(dataApiMiddleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(dataApiMiddleware);
     },
   };
 }

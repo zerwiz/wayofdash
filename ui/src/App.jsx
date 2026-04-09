@@ -1803,10 +1803,12 @@ export default function App() {
                     <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50/95 px-2.5 py-2 text-[10px] font-medium leading-snug text-amber-950 dark:border-amber-500/35 dark:bg-amber-950/40 dark:text-amber-100">
                       <strong className="font-bold">Preview mode.</strong> Drag-and-drop and live{' '}
                       <code className="rounded bg-amber-100/90 px-0.5 font-mono dark:bg-amber-900/50">workspace/</code>{' '}
-                      edits need the dev server. From the{' '}
+                      edits need a local Vite server with the data API. From the{' '}
                       <code className="rounded bg-amber-100/90 px-0.5 font-mono dark:bg-amber-900/50">ui</code>{' '}
-                      folder run <code className="font-mono">npm run dev</code>, then open the local URL (not static
-                      hosting).
+                      folder run <code className="font-mono">npm run dev</code> (or{' '}
+                      <code className="font-mono">npm run build</code> then <code className="font-mono">npm run preview</code>
+                      ), then open that local URL — not static hosting or a plain <code className="font-mono">dist/</code>{' '}
+                      upload.
                     </div>
                   ) : null}
                   {projectData.liveFiles && pendingMoveFrom ? (
