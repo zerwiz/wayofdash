@@ -1,0 +1,23 @@
+# Dependencies & build
+ui/node_modules/
+ui/dist/
+*.log
+npm-debug.log*
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# OS & editors
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Python (if added later)
+.venv/
+__pycache__/
+*.pyc

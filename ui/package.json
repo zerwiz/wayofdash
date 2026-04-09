@@ -1,0 +1,37 @@
+{
+  "name": "way-of-ui",
+  "version": "1.0.0",
+  "description": "Fibonacci Information Architecture Dashboard UI",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "scope:markdown-css": "node scripts/scope-github-markdown.mjs",
+    "predev": "npm run scope:markdown-css",
+    "prebuild": "npm run scope:markdown-css",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "github-markdown-css": "^5.9.0",
+    "lucide-react": "^0.437.0",
+    "mermaid": "^11.14.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "react-zoom-pan-pinch": "^4.0.3",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.35.0",
+    "postcss": "^8.5.9",
+    "postcss-prefix-selector": "^2.1.1",
+    "tailwindcss": "^3.4.19",
+    "vite": "^5.4.2"
+  }
+}

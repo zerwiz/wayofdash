@@ -1,0 +1,37 @@
+/* Layout and surface tweaks around GitHub-scoped markdown (gh-md-light / gh-md-dark). */
+.markdown-doc-root {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Match GitHub markdown paper so light/dark tracks `isDark` (scoped gh-md-* on this root). */
+.markdown-doc-root.gh-md-light {
+  background-color: #ffffff;
+  color: #1f2328;
+}
+
+.markdown-doc-root.gh-md-dark {
+  background-color: #0d1117;
+  color: #f0f6fc;
+}
+
+/* GitHub README layout: centered column, responsive padding (see github-markdown-css readme). */
+.markdown-doc-root .markdown-body {
+  box-sizing: border-box;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: clamp(15px, 3vw, 45px);
+  /* Use theme surface from .gh-md-* (do not force transparent — that broke text/surface vs code blocks). */
+  background-color: transparent;
+}
+
+.markdown-doc-root .markdown-body img {
+  background-color: transparent;
+}
+
+/* Block content emitted inside a paragraph wrapper (see MarkdownDoc `p` override) — match vertical rhythm of real <p>. */
+.markdown-doc-root .markdown-body .markdown-body-paragraph-shell {
+  margin-top: 0;
+  margin-bottom: 1em;
+}

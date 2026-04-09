@@ -1,0 +1,85 @@
+full:
+  - scout
+  - planner
+  - builder
+  - reviewer
+  - code-documenter
+  - documenter
+  - project-scanner
+  - playground-portal
+  - ralph
+
+# Single-member team: Pi dispatcher sends prompts to external Hermes CLI; reply on stdout
+hermes:
+  - hermes
+
+# Single-member: build INDEX.md map at requested path
+index:
+  - indexer
+
+# Bootstrap Pi-side docs under ~/.pi/projects/<slug>/ from projects/_template
+new-project:
+  - project-scanner
+  - indexer
+  - playground-portal
+
+# Ralph HTML ticket queue — dispatcher can pull scout/planner/builder/reviewer/code-documenter/documenter around ralph
+ralph:
+  - ralph
+  - scout
+  - planner
+  - builder
+  - reviewer
+  - code-documenter
+  - documenter
+
+plan-build:
+  - planner
+  - builder
+  - reviewer
+  - code-documenter
+
+# Builder-led orchestration: core planner / builder / reviewer / documenter + domain lang & infra specialists (dispatcher prompt routes stack → agent)
+build-orchestra:
+  - builder
+  - planner
+  - reviewer
+  - documenter
+  - lang-typescript-pro
+  - lang-python-pro
+  - lang-rust-engineer
+  - lang-javascript-pro
+  - lang-react-specialist
+  - lang-java-architect
+  - infra-devops-engineer
+  - infra-docker-expert
+  - data-ai-engineer
+
+info:
+  - scout
+  - web-searcher
+  - code-documenter
+  - documenter
+  - indexer
+  - hermes
+  - project-scanner
+  - playground-portal
+  - reviewer
+
+# Port playground extensions/skills into the current app repo
+playground-portal:
+  - playground-portal
+
+frontend:
+  - planner
+  - builder
+  - bowser
+
+pi-pi:
+  - ext-expert
+  - theme-expert
+  - skill-expert
+  - config-expert
+  - tui-expert
+  - prompt-expert
+  - agent-expert
