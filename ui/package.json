@@ -8,6 +8,7 @@
     "scope:markdown-css": "node scripts/scope-github-markdown.mjs",
     "predev": "npm run scope:markdown-css",
     "prebuild": "npm run scope:markdown-css",
+    "bake:way": "node scripts/bake-way-baked.mjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

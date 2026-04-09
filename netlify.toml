@@ -5,11 +5,13 @@
 
 [build]
   base = "ui"
-  command = "npm ci && npm run build"
+  # Bake repo workspace/ + agents/ into static /way-baked/* (same files as local dev API), then build with WAY_BAKED.
+  command = "npm ci && node scripts/bake-way-baked.mjs && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
+  WAY_BAKED = "1"
 
 # Single-page app (React): serve index.html for client-side routes
 [[redirects]]

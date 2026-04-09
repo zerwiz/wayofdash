@@ -33,5 +33,7 @@ export default defineConfig({
   },
   define: {
     __APP_VERSION__: JSON.stringify('1.0.0'),
+    /** Set `WAY_BAKED=1` during build (Netlify) after `scripts/bake-way-baked.mjs`. */
+    __WAY_BAKED__: JSON.stringify(process.env.WAY_BAKED === '1'),
   },
 });

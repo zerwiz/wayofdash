@@ -1,6 +1,8 @@
 # Dependencies & build
 ui/node_modules/
 ui/dist/
+# Generated on Netlify / local `bake:way` before a baked production build
+ui/public/way-baked/
 *.log
 npm-debug.log*
 

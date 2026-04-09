@@ -82,13 +82,16 @@ npm run build
 npm run preview
 ```
 
-After **`npm run preview`**, open the printed local URL (default `http://localhost:4173`). That server includes the same `/api/*` routes as **`npm run dev`**, so file-tree behavior matches dev. Deploying only the **`dist/`** folder to a static host (for example Netlify) does **not** include those APIs.
+After **`npm run preview`**, open the printed local URL (default `http://localhost:4173`). That server includes the same `/api/*` routes as **`npm run dev`**, so file-tree behavior matches dev.
+
+**Netlify** (repo **`netlify.toml`**): the build runs **`scripts/bake-way-baked.mjs`**, which copies **`workspace/`** and **`agents/`** beside `ui/` into **`public/way-baked/`** and writes JSON mirrors of the dev API (`data-tree.json`, `tasks-data.json`, `agents-list.json`). The app is built with **`WAY_BAKED=1`**, so the client loads those paths instead of **`/api/*`**. You get the **same file tree and file contents** as in dev for browsing; the deploy is **read-only** (no `POST` mutations to disk). To verify locally: **`npm run bake:way`**, then **`WAY_BAKED=1 npm run build`**, then **`npm run preview`**.
 
 ### Available Scripts
 
 - `npm run dev` - Start development server
-- `npm run build` - Create production build
-- `npm run preview` - Preview production build locally (includes workspace/agents API, same as dev)
+- `npm run build` - Create production build (without `WAY_BAKED`, uses `/api/*` when you run `vite preview`)
+- `npm run bake:way` - Regenerate `public/way-baked/` from repo `workspace/` + `agents/` (used by Netlify before build)
+- `npm run preview` - Preview production build locally (includes workspace/agents API, same as dev, when `WAY_BAKED` is not set)
 
 ## 📁 Project Structure
 

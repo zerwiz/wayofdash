@@ -8,4 +8,4 @@
 
 **Setup:** None beyond the Way of UI dev server; open files from the sidebar under `planning/`.
 
-**Ports/APIs:** Same as the app (`workspace/` is served via the Vite data-tree APIs in dev).
+**Ports/APIs:** Same as the app (`workspace/` is served via the Vite data-tree APIs in dev). On Netlify, the same `workspace/` tree is baked into static `way-baked/` assets at deploy time (read-only mirror).

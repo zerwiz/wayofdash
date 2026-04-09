@@ -5,6 +5,15 @@ import LoginPage from './LoginPage';
 import HostMessageModal from './HostMessageModal';
 import { useDarkMode } from './useDarkMode';
 import {
+  isWayBakedDeploy,
+  wayDataTreeUrl,
+  wayDataContentUrl,
+  wayTasksDataUrl,
+  wayAgentsListUrl,
+  wayAgentsContentUrl,
+  wayParseWorkspaceOrAgentBody,
+} from './wayBakedApi';
+import {
   LS_NOTIFY_SNOOZE,
   readNotifySnoozes,
   buildOverdueAlerts,
@@ -982,7 +991,7 @@ export default function App() {
 
   const refreshFilesTree = useCallback(async (opts) => {
     try {
-      const r = await fetch('/api/data-tree');
+      const r = await fetch(wayDataTreeUrl());
       if (!r.ok) return;
       const tree = await r.json();
       if (!tree?.id) return;
@@ -1309,7 +1318,7 @@ export default function App() {
   );
 
   const refreshAgentsList = useCallback(() => {
-    return fetch('/api/agents-list')
+    return fetch(wayAgentsListUrl())
       .then((r) => {
         if (!r.ok) throw new Error('agents-list failed');
         return r.json();
@@ -1320,7 +1329,11 @@ export default function App() {
       })
       .catch(() => {
         setAgentsList([]);
-        setAgentsLoadError('Agent files load when you run the dev server (`npm run dev` in `ui/`).');
+        setAgentsLoadError(
+          isWayBakedDeploy()
+            ? 'Could not load baked agent list (check deploy build / way-baked files).'
+            : 'Agent files load when you run the dev server (`npm run dev` in `ui/`).'
+        );
       });
   }, []);
 
@@ -1386,7 +1399,7 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/tasks-data')
+    fetch(wayTasksDataUrl())
       .then((r) => {
         if (!r.ok) return null;
         return r.json();
@@ -1407,9 +1420,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!tasksRemoteReady) return;
+    if (!tasksRemoteReady || isWayBakedDeploy()) return;
     const t = window.setTimeout(() => {
-      void fetch('/api/tasks-data', {
+      void fetch(wayTasksDataUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lists: taskLists }),
@@ -1437,7 +1450,7 @@ export default function App() {
   useEffect(() => {
     if (!isLoggedIn) return;
     let cancelled = false;
-    fetch('/api/data-tree')
+    fetch(wayDataTreeUrl())
       .then((r) => {
         if (!r.ok) throw new Error('no-api');
         return r.json();
@@ -1468,11 +1481,8 @@ export default function App() {
     if (item.content !== undefined) return;
 
     const ac = new AbortController();
-    fetch(`/api/data-content?path=${encodeURIComponent(item.relPath)}`, { signal: ac.signal })
-      .then((r) => {
-        if (!r.ok) throw new Error('load-failed');
-        return r.json();
-      })
+    fetch(wayDataContentUrl(item.relPath), { signal: ac.signal })
+      .then((r) => wayParseWorkspaceOrAgentBody(r))
       .then(({ content }) => {
         const text = content ?? '';
         setProjectData((prev) => patchNodeById(prev, item.id, { content: text }));
@@ -1536,9 +1546,9 @@ export default function App() {
     try {
       let systemOverride = null;
       if (selectedAgentPath.trim()) {
-        const ar = await fetch(`/api/agents-content?path=${encodeURIComponent(selectedAgentPath)}`);
+        const ar = await fetch(wayAgentsContentUrl(selectedAgentPath));
         if (ar.ok) {
-          const j = await ar.json();
+          const j = await wayParseWorkspaceOrAgentBody(ar);
           systemOverride = j.content ?? null;
         }
       }
@@ -1811,6 +1821,15 @@ export default function App() {
                       upload.
                     </div>
                   ) : null}
+                  {projectData.netlifyBaked ? (
+                    <div className="mb-3 rounded-xl border border-sky-200 bg-sky-50/95 px-2.5 py-2 text-[10px] font-medium leading-snug text-sky-950 dark:border-sky-500/35 dark:bg-sky-950/45 dark:text-sky-100">
+                      <strong className="font-bold">Netlify mirror.</strong> Files under{' '}
+                      <code className="rounded bg-sky-100/90 px-0.5 font-mono dark:bg-sky-900/50">workspace/</code> and{' '}
+                      <code className="rounded bg-sky-100/90 px-0.5 font-mono dark:bg-sky-900/50">agents/</code> match the
+                      repo at deploy time—the same tree and contents you see with <code className="font-mono">npm run dev</code>
+                      locally. This deploy is read-only; sidebar editing needs the local dev server.
+                    </div>
+                  ) : null}
                   {projectData.liveFiles && pendingMoveFrom ? (
                     <div className="mb-2 flex flex-wrap items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50/90 px-2.5 py-2 text-[10px] font-medium text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-950/50 dark:text-indigo-100">
                       <span className="min-w-0 flex-1">
@@ -2006,7 +2025,7 @@ export default function App() {
                           setActiveTaskListId(null);
                           setView('todos');
                           void refreshFilesTree({ preferSelectionId: 'tasks' });
-                          void fetch('/api/tasks-data')
+                          void fetch(wayTasksDataUrl())
                             .then((r) => (r.ok ? r.json() : null))
                             .then((data) => {
                               if (data?.lists)
@@ -2258,7 +2277,7 @@ export default function App() {
                           setActiveTaskListId(null);
                           setView('todos');
                           void refreshFilesTree({ preferSelectionId: 'tasks' });
-                          void fetch('/api/tasks-data')
+                          void fetch(wayTasksDataUrl())
                             .then((r) => (r.ok ? r.json() : null))
                             .then((data) => {
                               if (data?.lists)
@@ -2732,16 +2751,18 @@ export default function App() {
                     >
                       <RefreshCw size={14} /> Refresh
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setNewAgentError(null);
-                        setNewAgentOpen(true);
-                      }}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-600 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-white shadow-sm transition-colors hover:bg-indigo-500 dark:border-indigo-500/40"
-                    >
-                      <UserPlus size={14} /> New agent
-                    </button>
+                    {projectData.liveFiles ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewAgentError(null);
+                          setNewAgentOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-600 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-white shadow-sm transition-colors hover:bg-indigo-500 dark:border-indigo-500/40"
+                      >
+                        <UserPlus size={14} /> New agent
+                      </button>
+                    ) : null}
                   </div>
                 </div>
                 {agentsLoadError ? (
